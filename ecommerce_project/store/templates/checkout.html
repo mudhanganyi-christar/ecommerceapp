@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="section">
+    <h2 class="title">Checkout</h2>
+
+    {% if success %}
+    <div class="success-message">
+        <h3>🎉 Order Placed Successfully!</h3>
+        <p>Thank you for your purchase. We'll process your order soon.</p>
+        <a href="{% url 'products' %}" class="btn">Continue Shopping</a>
+    </div>
+    {% elif products %}
+    <div class="checkout-container">
+        <div class="checkout-items">
+            <h3>Order Summary</h3>
+            {% for product in products %}
+            <div class="checkout-item">
+                <div class="checkout-item-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                </div>
+                <div class="checkout-item-details">
+                    <h4>{{ product.name }}</h4>
+                    <p>Quantity: {{ product.qty }}</p>
+                    <p>Price: ${{ product.price }}</p>
+                    <p><strong>Total: ${{ product.total_price }}</strong></p>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="checkout-total">
+                <h3>Grand Total: ${{ total }}</h3>
+            </div>
+        </div>
+
+        <div class="checkout-form">
+            <h3>Shipping Information</h3>
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="phone" placeholder="Phone Number" required>
+                </div>
+
+                <div class="form-group">
+                    <textarea name="address" placeholder="Shipping Address" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <textarea name="notes" placeholder="Order Notes (Optional)" rows="2"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-checkout">Place Order</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-checkout">
+        <h3>Your cart is empty</h3>
+        <p>Add some products to your cart before checkout.</p>
+        <a href="{% url 'products' %}" class="btn">Start Shopping</a>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}
